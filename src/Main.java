@@ -7,33 +7,16 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-
+        //instantiate scanner and read file
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
+        List<Map<String, String>> data = parseCSV(f);
+    
 
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
-
+        //goes through our map, if our list is empty it adds it into a new array list
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : data) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -43,14 +26,15 @@ public class Main {
             lst.add(d);
         }
         int cnt = mp2.size();
-
+        //tells the user how many forks they have and prompts for which one to check
         System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
         String inp = s.nextLine();
 
+        // if the user input is "all", it prints out everything. Else, it prints out the input
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = data;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
@@ -58,6 +42,7 @@ public class Main {
 
         int sz = sel.size();
 
+        //calculates the time of the fork
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
@@ -69,6 +54,7 @@ public class Main {
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String latT = lat.format(f2);
 
+        // calculates the total commits and colculates the average
         double tot = 0.0;
         int tlc = 0;
         for (Map<String, String> d : sel) {
@@ -78,6 +64,7 @@ public class Main {
         }
         double avg = tot / sz;
 
+        //calcultes min and max value though mx and mn
         int mx = Integer.MIN_VALUE;
         int mn = Integer.MAX_VALUE;
         for (Map<String, String> d : sel) {
@@ -99,5 +86,28 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+    }
+    public static List<Map<String, String>> parseCSV(String filename){
+        List<Map<String, String>> data = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);  
+
+                Map<String, String> fileOutput = new HashMap<>();
+                fileOutput.put("id", v[0]);  
+                fileOutput.put("tm", v[1]);  
+                fileOutput.put("chg", String.valueOf(chg));
+                data.add(fileOutput);
+            }
+            //converts string from file to int and then puts all data into hasmap then adds map to an array
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null;
+        }
+        return data;
     }
 }
