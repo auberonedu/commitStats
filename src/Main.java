@@ -5,14 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in); // instantiating new scanner object
-
-        System.out.print("Enter the CSV filename: "); // prompting the user for file input
-        String fileName = scanner.nextLine();
-
+    public static List<Map<String, String>> parseCSV(String filename) {
         List<Map<String, String>> structureMap = new ArrayList<>(); // creates a map to structure the CSV columns
-        try (Scanner fileScanner = new Scanner(new File(fileName))) { 
+        try (Scanner fileScanner = new Scanner(new File(filename))) { 
             fileScanner.nextLine();
 
             while (fileScanner.hasNextLine()) {
@@ -28,12 +23,19 @@ public class Main {
             }
         } catch (FileNotFoundException exception) {
             System.out.println("Error reading the file: " + exception.getMessage()); // if there is no file, throw exception
-            scanner.close();
-            return;
+            // scanner.close();
+            // return null;
         }
+        return structureMap;
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // instantiating new scanner object
+
+        System.out.print("Enter the CSV filename: "); // prompting the user for file input
+        String fileName = scanner.nextLine();
 
         Map<String, List<Map<String, String>>> populatedMap = new HashMap<>(); // populating the mp2 hashmap with file content
-        for (Map<String, String> data : structureMap) {
+        for (Map<String, String> data : parseCSV(fileName)) {
             String id = data.get("id");
             List<Map<String, String>> lst = populatedMap.get(id);
             if (lst == null) {
@@ -50,7 +52,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = structureMap;
+            sel = parseCSV(fileName);
         } else {
             String id = "fork" + inp; 
             sel = populatedMap.get(id);
