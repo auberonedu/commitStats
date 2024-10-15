@@ -61,6 +61,7 @@ public class Main {
 
         int sz = sel.size();
 
+        //calculates the time of the fork
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
