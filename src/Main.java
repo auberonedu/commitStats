@@ -11,7 +11,9 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
+
+        // Lists all the commits were made and prints out the data of each commit
+        List<Map<String, String>> dta = new ArrayList<>(); 
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
