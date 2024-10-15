@@ -20,11 +20,11 @@ public class Main {
 
                 int chg = Integer.parseInt(v[2]);  
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> fileOutput = new HashMap<>();
+                fileOutput.put("id", v[0]);  
+                fileOutput.put("tm", v[1]);  
+                fileOutput.put("chg", String.valueOf(chg));
+                dta.add(fileOutput);
             }
             //converts string from file to int and then puts all data into hasmap then adds map to an array
         } catch (FileNotFoundException e) {
