@@ -17,10 +17,15 @@ public class Main {
 
         // Lists all the commits were made and prints out the data of each commit
         List<Map<String, String>> dta = new ArrayList<>(); 
+
+        // Scans the new file from user's input
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
+            // While there's still information in the file, the scanner will continuously scan for files
             while (fs.hasNextLine()) {
+
+                // Array of strings to show the results of scanner that splits each line with a comma
                 String[] v = fs.nextLine().split(",");
 
                 int chg = Integer.parseInt(v[2]);
