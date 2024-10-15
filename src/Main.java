@@ -16,38 +16,49 @@ public class Main {
         List<Map<String, String>> data = parseCSV(s.nextLine());
 
         
+        // creates new map containing the lists of maps with the same id
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        //
+        // loops through list of maps
         for (Map<String, String> d : data) {
             //Saves id into a string from d 
             String id = d.get("id");
             //Creates a new list map called lst and gets the key value
             List<Map<String, String>> lst = mp2.get(id);
+            // if there isn't a lst, it create the list
             if (lst == null) {
                 lst = new ArrayList<>();
+                // adds the list into the map
                 mp2.put(id, lst);
             }
+            // adds the data
             lst.add(d);
         }
-        int cnt = mp2.size();
 
-        System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
+        // gets count of forks and displays to user
+        int count = mp2.size();
+
+        System.out.println("There are " + count + " forks available (fork1 to fork" + count + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
-        String inp = s.nextLine();
+        String input = s.nextLine();
 
-        List<Map<String, String>> sel;
-        if (inp.equalsIgnoreCase("all")) {
-            sel = data;
-        } else {
-            String id = "fork" + inp; 
-            sel = mp2.get(id);
+        // creates a list of maps for the selection (all of the forks)
+        List<Map<String, String>> selection;
+
+        // if user picks "all" get all the data
+        if (input.equalsIgnoreCase("all")) {
+            selection = data;
+        } 
+        // otherwise select the fork from the id
+        else {
+            String id = "fork" + input; 
+            selection = mp2.get(id);
         }
 
-        int sz = sel.size();
+        int size = selection.size();
 
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
-        for (Map<String, String> d : sel) {
+        for (Map<String, String> d : selection) {
             LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
             if (lat == null || t.isAfter(lat)) {
                 lat = t;
@@ -58,16 +69,16 @@ public class Main {
 
         double tot = 0.0;
         int tlc = 0;
-        for (Map<String, String> d : sel) {
+        for (Map<String, String> d : selection) {
             int lc = Integer.parseInt(d.get("chg"));
             tot += lc;
             tlc += lc;
         }
-        double avg = tot / sz;
+        double avg = tot / size;
 
         int mx = Integer.MIN_VALUE;
         int mn = Integer.MAX_VALUE;
-        for (Map<String, String> d : sel) {
+        for (Map<String, String> d : selection) {
             int chg = Integer.parseInt(d.get("chg"));
             if (chg > mx) {
                 mx = chg;
@@ -78,7 +89,7 @@ public class Main {
         }
 
         System.out.println("\nStatistics:");
-        System.out.println("Number of commits: " + sz);
+        System.out.println("Number of commits: " + size);
         System.out.println("Most recent commit timestamp: " + latT);
         System.out.printf("Average lines changed per commit: %.2f\n", avg);
         System.out.println("Total lines changed across all commits: " + tlc);
