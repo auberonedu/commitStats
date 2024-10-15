@@ -45,7 +45,7 @@ public class Main {
             lst.add(d);
         }
         int cnt = mp2.size();
-
+        //tells the user how many forks they have and prompts for which one to check
         System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
         String inp = s.nextLine();
