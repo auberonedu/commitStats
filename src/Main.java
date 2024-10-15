@@ -6,26 +6,36 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        // Create a scanner named "s"
         Scanner s = new Scanner(System.in);
 
+        // Store user input in String "f" (this is the FILE NAME)
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
+        // Create a List containing a Map (containing String key-value pairs) called "dta"
         List<Map<String, String>> dta = new ArrayList<>();
+        // Create a new scanner ("fs" to read the FILE NAME stored in "f"
         try (Scanner fs = new Scanner(new File(f))) {
+            // cycle through lines of file
             fs.nextLine();
 
+            // For each line of content in FILE ...
             while (fs.hasNextLine()) {
+                // ...declare an array ("v") and populate it with contents of line delimited by commas
                 String[] v = fs.nextLine().split(",");
 
+                // Convert the LinesChanged String into an integer
                 int chg = Integer.parseInt(v[2]);  
 
+                // Create a new map ("mp1") and populate with String data from array "v" and the integer at "chg"
                 Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                mp1.put("id", v[0]);  // first item in array "v", represents forkID
+                mp1.put("tm", v[1]);  // second item in array "v", represents push time
+                mp1.put("chg", String.valueOf(chg)); // represents number of lines in push
+                dta.add(mp1); // add String map "mp1" to list "dta"
             }
+            // try-catch error if file is not found
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
             s.close();
