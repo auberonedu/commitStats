@@ -6,34 +6,34 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner s = new Scanner(System.in);
+        Scanner s = new Scanner(System.in); // instantiating new scanner object
 
-        System.out.print("Enter the CSV filename: ");
+        System.out.print("Enter the CSV filename: "); // prompting the user for file input
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
+        List<Map<String, String>> structureMap = new ArrayList<>(); // creates a map to structure the CSV columns
+        try (Scanner fs = new Scanner(new File(f))) { 
             fs.nextLine();
 
             while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
+                String[] v = fs.nextLine().split(","); // seperating by commas
 
                 int chg = Integer.parseInt(v[2]);  
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> fileDataMap = new HashMap<>(); // placing commit statistics into a new hashmap
+                fileDataMap.put("id", v[0]);  
+                fileDataMap.put("tm", v[1]);  
+                fileDataMap.put("chg", String.valueOf(chg));
+                structureMap.add(fileDataMap);
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
+            System.out.println("Error reading the file: " + e.getMessage()); // if there is no file, throw exception
             s.close();
             return;
         }
 
-        Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        Map<String, List<Map<String, String>>> mp2 = new HashMap<>(); // populating the mp2 hashmap with file content
+        for (Map<String, String> d : structureMap) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -50,7 +50,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = structureMap;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
