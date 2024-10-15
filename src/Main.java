@@ -6,9 +6,12 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        // Initializing a scanner that accepts input from the terminal
         Scanner s = new Scanner(System.in);
 
+        // Prints a prompt for the user to input a file name
         System.out.print("Enter the CSV filename: ");
+        // The variable takes in the file name inputed by the user as a String
         String f = s.nextLine();
 
         List<Map<String, String>> dta = new ArrayList<>();
@@ -18,11 +21,11 @@ public class Main {
             while (fs.hasNextLine()) {
                 String[] v = fs.nextLine().split(",");
 
-                int chg = Integer.parseInt(v[2]);  
+                int chg = Integer.parseInt(v[2]);
 
                 Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
+                mp1.put("id", v[0]);
+                mp1.put("tm", v[1]);
                 mp1.put("chg", String.valueOf(chg));
                 dta.add(mp1);
             }
@@ -52,7 +55,7 @@ public class Main {
         if (inp.equalsIgnoreCase("all")) {
             sel = dta;
         } else {
-            String id = "fork" + inp; 
+            String id = "fork" + inp;
             sel = mp2.get(id);
         }
 
@@ -61,7 +64,7 @@ public class Main {
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
-            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
+            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1);
             if (lat == null || t.isAfter(lat)) {
                 lat = t;
             }
