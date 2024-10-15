@@ -17,8 +17,11 @@ public class Main {
 
         
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
+        //
         for (Map<String, String> d : data) {
+            //Saves id into a string from d 
             String id = d.get("id");
+            //Creates a new list map called lst and gets the key value
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
                 lst = new ArrayList<>();
@@ -110,9 +113,15 @@ public class Main {
              }
          } catch (FileNotFoundException e) {
              System.out.println("Error reading the file: " + e.getMessage());
+<<<<<<< HEAD
+             return null;
+         }
+         return data; 
+=======
              
              return null;
          }
          return data;
+>>>>>>> 7a742df097b51635acf844e1818791c833b71100
     }
 }
