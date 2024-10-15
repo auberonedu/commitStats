@@ -6,42 +6,16 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+
         // Initializing a scanner that accepts input from the terminal
         Scanner s = new Scanner(System.in);
 
         // Prints a prompt for the user to input a file name
         System.out.print("Enter the CSV filename: ");
         // The variable takes in the file name inputed by the user as a String
-        String f = s.nextLine();
+        String filename = s.nextLine();
 
-        // Lists all the commits were made and prints out the data of each commit
-        List<Map<String, String>> commitStats = new ArrayList<>();
-
-        // Scans the new file from user's input
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            // While there's still information in the file, the scanner will continuously
-            // scan for files
-            while (fs.hasNextLine()) {
-
-                // Array of strings to show the results of scanner that splits each line with a
-                // comma
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);
-
-                Map<String, String> commits = new HashMap<>();
-                commits.put("id", v[0]);
-                commits.put("tm", v[1]);
-                commits.put("chg", String.valueOf(chg));
-                commitStats.add(commits);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+        List<Map<String, String>> commitStats = parseCSV(filename);
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : commitStats) {
@@ -110,5 +84,39 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+
     }
+
+    public static List<Map<String, String>> parseCSV(String filename) {
+
+        // Lists all the commits were made and prints out the data of each commit
+        List<Map<String, String>> commitStats = new ArrayList<>();
+        // Scans the new file from user's input
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            // While there's still information in the file, the scanner will continuously
+            // scan for files
+            while (fs.hasNextLine()) {
+
+                // Array of strings to show the results of scanner that splits each line with a
+                // comma
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);
+
+                Map<String, String> commits = new HashMap<>();
+                commits.put("id", v[0]);
+                commits.put("tm", v[1]);
+                commits.put("chg", String.valueOf(chg));
+                commitStats.add(commits);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
+
+        return commitStats;
+
+    }
+
 }
