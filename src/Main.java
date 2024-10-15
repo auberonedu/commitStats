@@ -8,32 +8,16 @@ public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
+
+
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
-
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+        //chosen file inputted into parseCVS to parse the file
+        List<Map<String, String>> forks = parseCSV(f);
+        
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : forks) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -50,9 +34,9 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = forks;
         } else {
-            String id = "fork" + inp; 
+            String id = "fork" + inp;
             sel = mp2.get(id);
         }
 
@@ -61,7 +45,7 @@ public class Main {
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
-            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
+            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1);
             if (lat == null || t.isAfter(lat)) {
                 lat = t;
             }
@@ -100,4 +84,33 @@ public class Main {
 
         s.close();
     }
+
+    public static List<Map<String, String>> parseCSV(String filename){
+        /*
+        * creates new map, with keys of from the data file forkID, time,
+        * and number of lines changed.
+        * 
+        */
+        List<Map<String, String>> forks = new ArrayList<>();
+        
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);
+
+                Map<String, String> commits = new HashMap<>();
+                commits.put("id", v[0]);
+                commits.put("tm", v[1]);
+                commits.put("chg", String.valueOf(chg));
+                forks.add(commits);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null;
+        }
+        return forks;
+}
 }
