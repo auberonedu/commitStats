@@ -12,34 +12,7 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        // Creates a scanner object that reads a file name
-        // adds contents from file into a map
-        List<Map<String, String>> forkList = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            // 
-            while (fs.hasNextLine()) {
-                // Read through string and split at each comma, adding
-                // to a string array
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                // Adding all three elements to a map with the specific
-                // key added for each type of variable
-                Map<String, String> indiForkMap = new HashMap<>();
-                indiForkMap.put("id", v[0]);  
-                indiForkMap.put("tm", v[1]);  
-                indiForkMap.put("chg", String.valueOf(chg));
-                forkList.add(indiForkMap);
-            }
-            // Throws a file not found exception if the file does not exist
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+        parseCSV(f);
 
         //  Filters through the original map and adds a new list to a second map
         // along with the id
@@ -118,5 +91,37 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+    }
+    public static List<Map<String, String>> parseCSV(String filename){
+
+        // Creates a scanner object that reads a file name
+        // adds contents from file into a map
+        List<Map<String, String>> forkList = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(f))) {
+            fs.nextLine();
+            Map<String, String> indiForkMap = new HashMap<>();
+            // 
+            while (fs.hasNextLine()) {
+                // Read through string and split at each comma, adding
+                // to a string array
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);  
+
+                // Adding all three elements to a map with the specific
+                // key added for each type of variable
+                
+                indiForkMap.put("id", v[0]);  
+                indiForkMap.put("tm", v[1]);  
+                indiForkMap.put("chg", String.valueOf(chg));
+                forkList.add(indiForkMap);
+            }
+            // Throws a file not found exception if the file does not exist
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            s.close();
+            return null;
+        }
+        return forkList;
     }
 }
