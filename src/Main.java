@@ -7,7 +7,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-
+        //instantiate scanner and read file
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
@@ -26,6 +26,7 @@ public class Main {
                 mp1.put("chg", String.valueOf(chg));
                 dta.add(mp1);
             }
+            //converts string from file to int and then puts all data into hasmap then adds map to an array
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
             s.close();
