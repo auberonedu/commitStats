@@ -8,33 +8,13 @@ public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
+
+
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
-        /*
-         * creates new map, with keys of from the data file forkID, time,
-         * and number of lines changed.
-         * 
-         */
-        List<Map<String, String>> forks = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);
-
-                Map<String, String> commits = new HashMap<>();
-                commits.put("id", v[0]);
-                commits.put("tm", v[1]);
-                commits.put("chg", String.valueOf(chg));
-                forks.add(commits);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+        //chosen file inputted into parseCVS to parse the file
+        List<Map<String, String>> forks = parseCVS(f);
+        
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : forks) {
@@ -104,4 +84,32 @@ public class Main {
 
         s.close();
     }
+
+    public static List<Map<String, String>> parseCVS(String filename){
+        /*
+        * creates new map, with keys of from the data file forkID, time,
+        * and number of lines changed.
+        * 
+        */
+        List<Map<String, String>> forks = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);
+
+                Map<String, String> commits = new HashMap<>();
+                commits.put("id", v[0]);
+                commits.put("tm", v[1]);
+                commits.put("chg", String.valueOf(chg));
+                forks.add(commits);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null;
+        }
+        return forks;
+}
 }
