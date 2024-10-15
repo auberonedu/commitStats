@@ -15,11 +15,12 @@ public class Main {
 
         List<Map<String, String>> data = parseCSV(s.nextLine());
 
-        s.close();
-
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
+        //
         for (Map<String, String> d : data) {
+            //Saves id into a string from d 
             String id = d.get("id");
+            //Creates a new list map called lst and gets the key value
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
                 lst = new ArrayList<>();
@@ -111,9 +112,8 @@ public class Main {
              }
          } catch (FileNotFoundException e) {
              System.out.println("Error reading the file: " + e.getMessage());
-             
-             return;
+             return null;
          }
-         return 
+         return data; 
     }
 }
