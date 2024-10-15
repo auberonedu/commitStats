@@ -15,6 +15,8 @@ public class Main {
 
         List<Map<String, String>> data = parseCSV(s.nextLine());
 
+        
+
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         //
         for (Map<String, String> d : data) {
@@ -112,8 +114,15 @@ public class Main {
              }
          } catch (FileNotFoundException e) {
              System.out.println("Error reading the file: " + e.getMessage());
+<<<<<<< HEAD
              return null;
          }
          return data; 
+=======
+             
+             return null;
+         }
+         return data;
+>>>>>>> 7a742df097b51635acf844e1818791c833b71100
     }
 }
