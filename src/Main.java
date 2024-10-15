@@ -54,28 +54,34 @@ public class Main {
             selection = mp2.get(id);
         }
 
+        // finding number of commits
         int size = selection.size();
 
+        // find latest commit
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime lat = null;
+        LocalDateTime latestCommit = null;
         for (Map<String, String> d : selection) {
             LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
-            if (lat == null || t.isAfter(lat)) {
-                lat = t;
+            if (latestCommit == null || t.isAfter(latestCommit)) {
+                latestCommit = t;
             }
         }
+
+        // formatting time and date
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String latT = lat.format(f2);
+        String latT = latestCommit.format(f2);
 
-        double tot = 0.0;
-        int tlc = 0;
+        // get average changes
+        double totalChangesDouble = 0.0;
+        int totalChangesInt = 0;
         for (Map<String, String> d : selection) {
-            int lc = Integer.parseInt(d.get("chg"));
-            tot += lc;
-            tlc += lc;
+            int latestChange = Integer.parseInt(d.get("chg"));
+            totalChangesDouble += latestChange;
+            totalChangesInt += latestChange;
         }
-        double avg = tot / size;
+        double avg = totalChangesDouble / size;
 
+        // getting minimum and maximum number of commits total
         int mx = Integer.MIN_VALUE;
         int mn = Integer.MAX_VALUE;
         for (Map<String, String> d : selection) {
@@ -88,11 +94,12 @@ public class Main {
             }
         }
 
+        // printing out information
         System.out.println("\nStatistics:");
         System.out.println("Number of commits: " + size);
         System.out.println("Most recent commit timestamp: " + latT);
         System.out.printf("Average lines changed per commit: %.2f\n", avg);
-        System.out.println("Total lines changed across all commits: " + tlc);
+        System.out.println("Total lines changed across all commits: " + totalChangesInt);
         System.out.println("Max lines changed in a commit: " + mx);
         System.out.println("Min lines changed in a commit: " + mn);
 
@@ -127,5 +134,6 @@ public class Main {
              return null;
          }
          return data; 
+
     }
 }
