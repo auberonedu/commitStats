@@ -83,6 +83,7 @@ public class Main {
         }
         double avg = tot / sz;
 
+        //calcultes min and max value though mx and mn
         int mx = Integer.MIN_VALUE;
         int mn = Integer.MAX_VALUE;
         for (Map<String, String> d : sel) {
