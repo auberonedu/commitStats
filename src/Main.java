@@ -15,7 +15,7 @@ public class Main {
         String f = s.nextLine();
 
         // Lists all the commits were made and prints out the data of each commit
-        List<Map<String, String>> dta = new ArrayList<>();
+        List<Map<String, String>> commitStats = new ArrayList<>();
 
         // Scans the new file from user's input
         try (Scanner fs = new Scanner(new File(f))) {
@@ -35,7 +35,7 @@ public class Main {
                 commits.put("id", v[0]);
                 commits.put("tm", v[1]);
                 commits.put("chg", String.valueOf(chg));
-                dta.add(commits);
+                commitStats.add(commits);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
@@ -44,7 +44,7 @@ public class Main {
         }
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : commitStats) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -61,7 +61,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = commitStats;
         } else {
             String id = "fork" + inp;
             sel = mp2.get(id);
