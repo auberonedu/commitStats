@@ -16,7 +16,6 @@ public class Main {
         List<Map<String, String>> data = parseCSV(s.nextLine());
 
         
-
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : data) {
             String id = d.get("id");
