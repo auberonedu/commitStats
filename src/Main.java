@@ -11,27 +11,8 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> data = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> fileOutput = new HashMap<>();
-                fileOutput.put("id", v[0]);  
-                fileOutput.put("tm", v[1]);  
-                fileOutput.put("chg", String.valueOf(chg));
-                data.add(fileOutput);
-            }
-            //converts string from file to int and then puts all data into hasmap then adds map to an array
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+        List<Map<String, String>> data = parseCSV(f);
+    
 
         //goes through our map, if our list is empty it adds it into a new array list
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
@@ -105,5 +86,28 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+    }
+    public static List<Map<String, String>> parseCSV(String filename){
+        List<Map<String, String>> data = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);  
+
+                Map<String, String> fileOutput = new HashMap<>();
+                fileOutput.put("id", v[0]);  
+                fileOutput.put("tm", v[1]);  
+                fileOutput.put("chg", String.valueOf(chg));
+                data.add(fileOutput);
+            }
+            //converts string from file to int and then puts all data into hasmap then adds map to an array
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null;
+        }
+        return data;
     }
 }
