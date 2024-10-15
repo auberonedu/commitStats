@@ -50,6 +50,7 @@ public class Main {
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
         String inp = s.nextLine();
 
+        // if the user input is "all", it prints out everything. Else, it prints out the input
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
             sel = dta;
