@@ -14,27 +14,28 @@ public class Main {
         // The variable takes in the file name inputed by the user as a String
         String f = s.nextLine();
 
-
         // Lists all the commits were made and prints out the data of each commit
-        List<Map<String, String>> dta = new ArrayList<>(); 
+        List<Map<String, String>> dta = new ArrayList<>();
 
         // Scans the new file from user's input
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
-            // While there's still information in the file, the scanner will continuously scan for files
+            // While there's still information in the file, the scanner will continuously
+            // scan for files
             while (fs.hasNextLine()) {
 
-                // Array of strings to show the results of scanner that splits each line with a comma
+                // Array of strings to show the results of scanner that splits each line with a
+                // comma
                 String[] v = fs.nextLine().split(",");
 
                 int chg = Integer.parseInt(v[2]);
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);
-                mp1.put("tm", v[1]);
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> commits = new HashMap<>();
+                commits.put("id", v[0]);
+                commits.put("tm", v[1]);
+                commits.put("chg", String.valueOf(chg));
+                dta.add(commits);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
