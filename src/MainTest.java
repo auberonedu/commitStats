@@ -12,6 +12,8 @@ public class MainTest {
     void testParseCSV() {
       // You will finish implementing this method in Wave 3
       // TODO: Call Main.parseCSV("data/small_commit_data.csv") here and set it to an actual variable
+  
+      List<Map<String, String>> readCsv = Main.parseCSV("data/small_commit_data.csv");
 
 
       // Sets up the expected value for you. You do not need to edit this part
@@ -35,6 +37,7 @@ public class MainTest {
       commit3.put("id", "fork2");
       expectedCommits.add(commit3);
       // Finish expected value setup
+
 
       // TODO: Assert that the expected equals the actual
     }
