@@ -11,36 +11,11 @@ public class Main {
         Scanner s = new Scanner(System.in);
 
         System.out.print("Enter the CSV filename: ");
-        String f = s.nextLine();
+        //String f = s.nextLine();
 
-        // create a list of maps called dta
-        List<Map<String, String>> data = new ArrayList<>();
+        List<Map<String, String>> data = parseCSV(s.nextLine());
 
-        // iterate through the csv file
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                //split each line by comma and put in string array
-                String[] v = fs.nextLine().split(",");
-
-                // get the integer from the 3rd position in the line
-                int chg = Integer.parseInt(v[2]);  
-
-                // each map is a line in the file
-                // add map line to the list
-                Map<String, String> lineMap = new HashMap<>();
-                lineMap.put("id", v[0]);  
-                lineMap.put("tm", v[1]);  
-                lineMap.put("chg", String.valueOf(chg));
-                data.add(lineMap);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
-
+        s.close();
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : data) {
@@ -109,5 +84,36 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+    }
+
+    public static List<Map<String, String>> parseCSV(String filename){
+         // create a list of maps called dta
+         List<Map<String, String>> data = new ArrayList<>();
+
+         // iterate through the csv file
+         try (Scanner fs = new Scanner(new File(filename))) {
+             fs.nextLine();
+ 
+             while (fs.hasNextLine()) {
+                 //split each line by comma and put in string array
+                 String[] v = fs.nextLine().split(",");
+ 
+                 // get the integer from the 3rd position in the line
+                 int chg = Integer.parseInt(v[2]);  
+ 
+                 // each map is a line in the file
+                 // add map line to the list
+                 Map<String, String> lineMap = new HashMap<>();
+                 lineMap.put("id", v[0]);  
+                 lineMap.put("tm", v[1]);  
+                 lineMap.put("chg", String.valueOf(chg));
+                 data.add(lineMap);
+             }
+         } catch (FileNotFoundException e) {
+             System.out.println("Error reading the file: " + e.getMessage());
+             
+             return;
+         }
+         return 
     }
 }
