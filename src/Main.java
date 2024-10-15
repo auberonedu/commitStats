@@ -10,28 +10,14 @@ public class Main {
         // Asking the user to enter the CSV filename and store their input
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
-        // Creating an ArrayList and a HashMap 
-        List<Map<String, String>> dataList = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> commitData = new HashMap<>();
-                commitData.put("id", v[0]);  
-                commitData.put("tm", v[1]);  
-                commitData.put("chg", String.valueOf(chg));
-                dataList.add(commitData);
-            }
-          // Catching the error if the file is not found and close the scanner 
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
+      
+         // Call the helper method to parse the CSV file
+         List<Map<String, String>> dataList = parseCSV(f);
+         if (dataList == null) {
+             s.close();
+             return; 
         }
+        
         // Creating a Hashmap and iterating through the data to get the id of the fork
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : dataList) {
@@ -106,6 +92,24 @@ public class Main {
     }
     // Helper method 
     public static List<Map<String, String>> parseCSV(String filename) {
-        
+        List<Map<String, String>> dataList = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine(); 
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+                int chg = Integer.parseInt(v[2]);  
+
+                Map<String, String> commitData = new HashMap<>();
+                commitData.put("id", v[0]);  
+                commitData.put("tm", v[1]);  
+                commitData.put("chg", String.valueOf(chg));
+                dataList.add(commitData);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null; // return null to indicate failure
+        }
+        return dataList;
     }
 }
