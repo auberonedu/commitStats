@@ -72,6 +72,7 @@ public class Main {
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String latT = lat.format(f2);
 
+        // calculates the total commits and colculates the average
         double tot = 0.0;
         int tlc = 0;
         for (Map<String, String> d : sel) {
