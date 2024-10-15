@@ -104,4 +104,8 @@ public class Main {
         // Close the scanner 
         s.close();
     }
+    // Helper method 
+    public static List<Map<String, String>> parseCSV(String filename) {
+        
+    }
 }
