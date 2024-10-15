@@ -33,6 +33,7 @@ public class Main {
             return;
         }
 
+        //goes through our map, if our list is empty it adds it into a new array list
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : dta) {
             String id = d.get("id");
