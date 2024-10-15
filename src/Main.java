@@ -5,55 +5,57 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner s = new Scanner(System.in);
+    public static List<Map<String, String>> parseCSV(String filename) {
+        List<Map<String, String>> structureMap = new ArrayList<>(); // creates a map to structure the CSV columns
+        try (Scanner fileScanner = new Scanner(new File(filename))) { 
+            fileScanner.nextLine();
 
-        System.out.print("Enter the CSV filename: ");
-        String f = s.nextLine();
+            while (fileScanner.hasNextLine()) {
+                String[] values = fileScanner.nextLine().split(","); // seperating by commas
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
+                int changes = Integer.parseInt(values[2]);  
 
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> fileDataMap = new HashMap<>(); // placing commit statistics into a new hashmap
+                fileDataMap.put("id", values[0]);  
+                fileDataMap.put("tm", values[1]);  
+                fileDataMap.put("chg", String.valueOf(changes));
+                structureMap.add(fileDataMap);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
+        } catch (FileNotFoundException exception) {
+            System.out.println("Error reading the file: " + exception.getMessage()); // if there is no file, throw exception
+            // scanner.close();
+            // return null;
         }
+        return structureMap;
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // instantiating new scanner object
 
-        Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
-            String id = d.get("id");
-            List<Map<String, String>> lst = mp2.get(id);
+        System.out.print("Enter the CSV filename: "); // prompting the user for file input
+        String fileName = scanner.nextLine();
+
+        Map<String, List<Map<String, String>>> populatedMap = new HashMap<>(); // populating the mp2 hashmap with file content
+        for (Map<String, String> data : parseCSV(fileName)) {
+            String id = data.get("id");
+            List<Map<String, String>> lst = populatedMap.get(id);
             if (lst == null) {
                 lst = new ArrayList<>();
-                mp2.put(id, lst);
+                populatedMap.put(id, lst);
             }
-            lst.add(d);
+            lst.add(data);
         }
-        int cnt = mp2.size();
+        int cnt = populatedMap.size();
 
         System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
-        String inp = s.nextLine();
+        String inp = scanner.nextLine();
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = parseCSV(fileName);
         } else {
             String id = "fork" + inp; 
-            sel = mp2.get(id);
+            sel = populatedMap.get(id);
         }
 
         int sz = sel.size();
@@ -98,6 +100,6 @@ public class Main {
         System.out.println("Max lines changed in a commit: " + mx);
         System.out.println("Min lines changed in a commit: " + mn);
 
-        s.close();
+        scanner.close();
     }
 }
