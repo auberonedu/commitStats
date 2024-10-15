@@ -6,34 +6,19 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+
+        // Initializing a scanner that accepts input from the terminal
         Scanner s = new Scanner(System.in);
 
+        // Prints a prompt for the user to input a file name
         System.out.print("Enter the CSV filename: ");
-        String f = s.nextLine();
+        // The variable takes in the file name inputed by the user as a String
+        String filename = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+        List<Map<String, String>> commitStats = parseCSV(filename);
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : commitStats) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -50,9 +35,9 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = commitStats;
         } else {
-            String id = "fork" + inp; 
+            String id = "fork" + inp;
             sel = mp2.get(id);
         }
 
@@ -61,7 +46,7 @@ public class Main {
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
-            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
+            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1);
             if (lat == null || t.isAfter(lat)) {
                 lat = t;
             }
@@ -99,5 +84,39 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+
     }
+
+    public static List<Map<String, String>> parseCSV(String filename) {
+
+        // Lists all the commits were made and prints out the data of each commit
+        List<Map<String, String>> commitStats = new ArrayList<>();
+        // Scans the new file from user's input
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            // While there's still information in the file, the scanner will continuously
+            // scan for files
+            while (fs.hasNextLine()) {
+
+                // Array of strings to show the results of scanner that splits each line with a
+                // comma
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);
+
+                Map<String, String> commits = new HashMap<>();
+                commits.put("id", v[0]);
+                commits.put("tm", v[1]);
+                commits.put("chg", String.valueOf(chg));
+                commitStats.add(commits);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
+
+        return commitStats;
+
+    }
+
 }
