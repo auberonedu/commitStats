@@ -1,4 +1,4 @@
-# commitStats
+# commitStats (Alston and Diana)
 
 A program written in poor style to help give practice with the VS Code debugger and refactoring.
 
