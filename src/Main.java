@@ -13,8 +13,8 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        // Create a List containing a Map (containing String key-value pairs) called "dta"
-        List<Map<String, String>> dta = new ArrayList<>();
+        // Create a List containing a Map (containing String key-value pairs) called "allUserCommits"
+        List<Map<String, String>> allUserCommits = new ArrayList<>();
         // Create a new scanner ("fs" to read the FILE NAME stored in "f"
         try (Scanner fs = new Scanner(new File(f))) {
             // cycle through lines of file
@@ -26,14 +26,14 @@ public class Main {
                 String[] v = fs.nextLine().split(",");
 
                 // Convert the LinesChanged String into an integer
-                int chg = Integer.parseInt(v[2]);  
+                int numLinesChanged = Integer.parseInt(v[2]);  
 
-                // Create a new map ("mp1") and populate with String data from array "v" and the integer at "chg"
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  // first item in array "v", represents forkID
-                mp1.put("tm", v[1]);  // second item in array "v", represents push time
-                mp1.put("chg", String.valueOf(chg)); // represents number of lines in push
-                dta.add(mp1); // add String map "mp1" to list "dta"
+                // Create a new map ("eachCommitData") and populate with String data from array "v" and the integer at "numLinesChanged"
+                Map<String, String> eachCommitData = new HashMap<>();
+                eachCommitData.put("id", v[0]);  // first item in array "v", represents forkID
+                eachCommitData.put("tm", v[1]);  // second item in array "v", represents push time
+                eachCommitData.put("numLinesChanged", String.valueOf(numLinesChanged)); // represents number of lines in push
+                allUserCommits.add(eachCommitData); // add String map "eachCommitData" to list "allUserCommits"
             }
             // try-catch error if file is not found
         } catch (FileNotFoundException e) {
@@ -42,9 +42,15 @@ public class Main {
             return;
         }
 
+        // Creating a Map comprised of a Key String and a List Value comprised of a Map of Strings named "mp2"
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+
+        // Iterating through the Map called "allUserCommits" that was created on line 17
+        for (Map<String, String> d : allUserCommits) {
+            // for each item in the map - we are getting the value of the Key: ID
             String id = d.get("id");
+
+            //Creating a new list comprised of a Map named "lst" and we
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
                 lst = new ArrayList<>();
@@ -60,7 +66,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = allUserCommits;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
@@ -82,7 +88,7 @@ public class Main {
         double tot = 0.0;
         int tlc = 0;
         for (Map<String, String> d : sel) {
-            int lc = Integer.parseInt(d.get("chg"));
+            int lc = Integer.parseInt(d.get("numLinesChanged"));
             tot += lc;
             tlc += lc;
         }
@@ -91,12 +97,12 @@ public class Main {
         int mx = Integer.MIN_VALUE;
         int mn = Integer.MAX_VALUE;
         for (Map<String, String> d : sel) {
-            int chg = Integer.parseInt(d.get("chg"));
-            if (chg > mx) {
-                mx = chg;
+            int numLinesChanged = Integer.parseInt(d.get("numLinesChanged"));
+            if (numLinesChanged > mx) {
+                mx = numLinesChanged;
             }
-            if (chg < mn) {
-                mn = chg;
+            if (numLinesChanged < mn) {
+                mn = numLinesChanged;
             }
         }
 
