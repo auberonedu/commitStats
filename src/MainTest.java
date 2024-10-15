@@ -12,7 +12,7 @@ public class MainTest {
     void testParseCSV() {
       // You will finish implementing this method in Wave 3
       // TODO: Call Main.parseCSV("data/small_commit_data.csv") here and set it to an actual variable
-
+     List<Map<String,String>> actualCommits = Main.parseCSV("data/small_commit_data.csv"); 
 
       // Sets up the expected value for you. You do not need to edit this part
       List<Map<String, String>> expectedCommits = new ArrayList<>();
@@ -37,5 +37,6 @@ public class MainTest {
       // Finish expected value setup
 
       // TODO: Assert that the expected equals the actual
+      assertEquals (expectedCommits, actualCommits);
     }
 }

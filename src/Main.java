@@ -13,7 +13,7 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
         //chosen file inputted into parseCVS to parse the file
-        List<Map<String, String>> forks = parseCVS(f);
+        List<Map<String, String>> forks = parseCSV(f);
         
 
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
@@ -85,13 +85,14 @@ public class Main {
         s.close();
     }
 
-    public static List<Map<String, String>> parseCVS(String filename){
+    public static List<Map<String, String>> parseCSV(String filename){
         /*
         * creates new map, with keys of from the data file forkID, time,
         * and number of lines changed.
         * 
         */
         List<Map<String, String>> forks = new ArrayList<>();
+        
         try (Scanner fs = new Scanner(new File(filename))) {
             fs.nextLine();
 
