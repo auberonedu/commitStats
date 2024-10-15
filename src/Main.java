@@ -6,25 +6,34 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+
+        // create scanner and get the csv file from the user
         Scanner s = new Scanner(System.in);
 
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
+        // create a list of maps called dta
+        List<Map<String, String>> data = new ArrayList<>();
+
+        // iterate through the csv file
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
             while (fs.hasNextLine()) {
+                //split each line by comma and put in string array
                 String[] v = fs.nextLine().split(",");
 
+                // get the integer from the 3rd position in the line
                 int chg = Integer.parseInt(v[2]);  
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                // each map is a line in the file
+                // add map line to the list
+                Map<String, String> lineMap = new HashMap<>();
+                lineMap.put("id", v[0]);  
+                lineMap.put("tm", v[1]);  
+                lineMap.put("chg", String.valueOf(chg));
+                data.add(lineMap);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
@@ -32,8 +41,9 @@ public class Main {
             return;
         }
 
+
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : data) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -50,7 +60,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = data;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
