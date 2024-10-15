@@ -11,7 +11,7 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
+        List<Map<String, String>> data = new ArrayList<>();
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
@@ -24,7 +24,7 @@ public class Main {
                 fileOutput.put("id", v[0]);  
                 fileOutput.put("tm", v[1]);  
                 fileOutput.put("chg", String.valueOf(chg));
-                dta.add(fileOutput);
+                data.add(fileOutput);
             }
             //converts string from file to int and then puts all data into hasmap then adds map to an array
         } catch (FileNotFoundException e) {
@@ -35,7 +35,7 @@ public class Main {
 
         //goes through our map, if our list is empty it adds it into a new array list
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : data) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -53,7 +53,7 @@ public class Main {
         // if the user input is "all", it prints out everything. Else, it prints out the input
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = data;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
