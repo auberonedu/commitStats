@@ -11,7 +11,7 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
         // Creating an ArrayList and a HashMap 
-        List<Map<String, String>> dta = new ArrayList<>();
+        List<Map<String, String>> dataList = new ArrayList<>();
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
@@ -20,11 +20,11 @@ public class Main {
 
                 int chg = Integer.parseInt(v[2]);  
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> commitData = new HashMap<>();
+                commitData.put("id", v[0]);  
+                commitData.put("tm", v[1]);  
+                commitData.put("chg", String.valueOf(chg));
+                dataList.add(commitData);
             }
           // Catching the error if the file is not found and close the scanner 
         } catch (FileNotFoundException e) {
@@ -34,7 +34,7 @@ public class Main {
         }
         // Creating a Hashmap and iterating through the data to get the id of the fork
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : dataList) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -53,7 +53,7 @@ public class Main {
         // Selects commits based on the user input
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = dataList;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
