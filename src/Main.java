@@ -22,11 +22,11 @@ public class Main {
 
                 int chg = Integer.parseInt(v[2]);  
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> dataMap = new HashMap<>();
+                dataMap.put("id", v[0]);  
+                dataMap.put("tm", v[1]);  
+                dataMap.put("chg", String.valueOf(chg));
+                dta.add(dataMap);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
