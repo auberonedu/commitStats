@@ -59,6 +59,7 @@ public class Main {
                 listOfMapsByID = new ArrayList<>();
                 commitsByID.put(id, listOfMapsByID);
             }
+            // ...add the Map to the List of maps by ID
             listOfMapsByID.add(eachCommit);
         }
 
