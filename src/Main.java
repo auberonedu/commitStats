@@ -8,9 +8,11 @@ public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
+        //takes input from the user
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
+        //store the info from the text file
         List<Map<String, String>> dta = new ArrayList<>();
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
@@ -32,6 +34,7 @@ public class Main {
             return;
         }
 
+        //store info for "id"
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
         for (Map<String, String> d : dta) {
             String id = d.get("id");
@@ -90,6 +93,7 @@ public class Main {
             }
         }
 
+        //print statistics
         System.out.println("\nStatistics:");
         System.out.println("Number of commits: " + sz);
         System.out.println("Most recent commit timestamp: " + latT);
