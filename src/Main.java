@@ -13,34 +13,7 @@ public class Main {
         System.out.print("Enter the CSV filename: ");
         String fileName = scan.nextLine();
 
-        // Create a List of Maps (containing String key-value pairs) called "allCommits"
-        List<Map<String, String>> allCommits = new ArrayList<>();
-        // Cycle through lines of the file
-        try (Scanner fileScan = new Scanner(new File(fileName))) {
-            fileScan.nextLine();
-            // For each line of content in FILE ...
-            while (fileScan.hasNextLine()) {
-                // ...create an array ("dataItems") and populate it with contents of line delimited by commas (id, timeStamp, numLinesChanged)
-                String[] dataItems = fileScan.nextLine().split(",");
-
-                // Convert the numLinesChanged from a String into an integer
-                int numLinesChanged = Integer.parseInt(dataItems[2]);  
-
-                // Create a new map ("eachCommitData") and populate with String data from array and the integer at "numLinesChanged"
-                Map<String, String> eachCommitData = new HashMap<>();
-                eachCommitData.put("id", dataItems[0]);  // forkID
-                eachCommitData.put("timeStamp", dataItems[1]);  // push time
-                eachCommitData.put("numLinesChanged", String.valueOf(numLinesChanged)); // number of lines in push
-
-                // add this map ("eachCommitData") to the List of allCommits
-                allCommits.add(eachCommitData); 
-            }
-        // try-catch throw error if file is not found
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            scan.close();
-            return;
-        }
+        List<Map<String, String>> allCommits = parseCSV(fileName);
 
         // Create a Map  where the key is a string id and the value is a List of Maps containing all data about commits made by that id
         Map<String, List<Map<String, String>>> commitsByID = new HashMap<>();
@@ -133,4 +106,38 @@ public class Main {
 
         scan.close();
     }
+
+    public static List<Map<String, String>> parseCSV(String filename) {
+        // Create a List of Maps (containing String key-value pairs) called "allCommits"
+        List<Map<String, String>> allCommits = new ArrayList<>();
+        String nameOfFile = filename;
+
+        // Cycle through lines of the file
+        try (Scanner fileScan = new Scanner(new File(nameOfFile))) {
+            fileScan.nextLine();
+            // For each line of content in FILE ...
+            while (fileScan.hasNextLine()) {
+                // ...create an array ("dataItems") and populate it with contents of line delimited by commas (id, timeStamp, numLinesChanged)
+                String[] dataItems = fileScan.nextLine().split(",");
+
+                // Convert the numLinesChanged from a String into an integer
+                int numLinesChanged = Integer.parseInt(dataItems[2]);  
+
+                // Create a new map ("eachCommitData") and populate with String data from array and the integer at "numLinesChanged"
+                Map<String, String> eachCommitData = new HashMap<>();
+                eachCommitData.put("id", dataItems[0]);  // forkID
+                eachCommitData.put("timeStamp", dataItems[1]);  // push time
+                eachCommitData.put("numLinesChanged", String.valueOf(numLinesChanged)); // number of lines in push
+
+                // add this map ("eachCommitData") to the List of allCommits
+                allCommits.add(eachCommitData); 
+            }
+        // try-catch throw error if file is not found
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null;
+        }
+    return allCommits;
+}
+
 }
