@@ -6,98 +6,138 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner s = new Scanner(System.in);
+        // Create a scanner
+        Scanner scan = new Scanner(System.in);
 
+        // Collect filename from user
         System.out.print("Enter the CSV filename: ");
-        String f = s.nextLine();
+        String fileName = scan.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
+        List<Map<String, String>> allCommits = parseCSV(fileName);
 
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
+        // Create a Map  where the key is a string id and the value is a List of Maps containing all data about commits made by that id
+        Map<String, List<Map<String, String>>> commitsByID = new HashMap<>();
 
-                int chg = Integer.parseInt(v[2]);  
+        // Iterating through List "allCommits," which contains Maps of eachCommitData
+        // For each Map stored in the List of all commits ...
+        for (Map<String, String> eachCommit : allCommits) {
+            // ... retrieve the String id value stored at the key "id" (forkID)
+            String id = eachCommit.get("id");
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+            // ... create a new List comprised of Maps and populate it with 
+            // the List in commitsByID Map stored at the key matching the id
+            List<Map<String, String>> listOfMapsByID = commitsByID.get(id);
+            // ... if the id has not been added to the Map, add it with this list
+            if (listOfMapsByID == null) {
+                listOfMapsByID = new ArrayList<>();
+                commitsByID.put(id, listOfMapsByID);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
+            // ...add the Map to the List of maps by ID
+            listOfMapsByID.add(eachCommit);
         }
 
-        Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
-            String id = d.get("id");
-            List<Map<String, String>> lst = mp2.get(id);
-            if (lst == null) {
-                lst = new ArrayList<>();
-                mp2.put(id, lst);
-            }
-            lst.add(d);
-        }
-        int cnt = mp2.size();
+        // store size of map in "numberOfForks"
+        int numberOfForks = commitsByID.size();
 
-        System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
+        // print output
+        System.out.println("There are " + numberOfForks + " forks available (fork1 to fork" + numberOfForks + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
-        String inp = s.nextLine();
+        String inp = scan.nextLine();
 
-        List<Map<String, String>> sel;
+        // if user enters "all", display whole list, else get list from map
+        List<Map<String, String>> dataFromFork;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            dataFromFork = allCommits;
         } else {
             String id = "fork" + inp; 
-            sel = mp2.get(id);
+            dataFromFork = commitsByID.get(id);
         }
 
-        int sz = sel.size();
+        int numOfCommits = dataFromFork.size();
 
+        // Create a date formatter and use it to format date
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime lat = null;
-        for (Map<String, String> d : sel) {
-            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
-            if (lat == null || t.isAfter(lat)) {
-                lat = t;
+        LocalDateTime latestTime = null;
+        // Iterating through dataFromFork Map
+        for (Map<String, String> userData : dataFromFork) {
+
+            LocalDateTime timeStamp = LocalDateTime.parse(userData.get("timeStamp"), f1);
+
+            // Identifying what is the latest timestamp
+            if (latestTime == null || timeStamp.isAfter(latestTime)) {
+                latestTime = timeStamp;
             }
         }
+
+        // Converting DateTime into specified pattern
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String latT = lat.format(f2);
+        String latestTimeStamp = latestTime.format(f2);
 
+        // Calculating total lines changed over all sessions
         double tot = 0.0;
-        int tlc = 0;
-        for (Map<String, String> d : sel) {
-            int lc = Integer.parseInt(d.get("chg"));
-            tot += lc;
-            tlc += lc;
+        int totalLinesChanged = 0;
+        for (Map<String, String> d : dataFromFork) {
+            int intLinesChanged = Integer.parseInt(d.get("numLinesChanged"));
+            tot += intLinesChanged;
+            totalLinesChanged += intLinesChanged;
         }
-        double avg = tot / sz;
+        double avgLinesPerCommit = tot / numOfCommits;
 
-        int mx = Integer.MIN_VALUE;
-        int mn = Integer.MAX_VALUE;
-        for (Map<String, String> d : sel) {
-            int chg = Integer.parseInt(d.get("chg"));
-            if (chg > mx) {
-                mx = chg;
+        // Finding the largest and smallest values in changed lines
+        int maxChangedInACommit = Integer.MIN_VALUE;
+        int minChangedInACommit = Integer.MAX_VALUE;
+        for (Map<String, String> d : dataFromFork) {
+            int numLinesChanged = Integer.parseInt(d.get("numLinesChanged"));
+            if (numLinesChanged > maxChangedInACommit) {
+                maxChangedInACommit = numLinesChanged;
             }
-            if (chg < mn) {
-                mn = chg;
+            if (numLinesChanged < minChangedInACommit) {
+                minChangedInACommit = numLinesChanged;
             }
         }
 
         System.out.println("\nStatistics:");
-        System.out.println("Number of commits: " + sz);
-        System.out.println("Most recent commit timestamp: " + latT);
-        System.out.printf("Average lines changed per commit: %.2f\n", avg);
-        System.out.println("Total lines changed across all commits: " + tlc);
-        System.out.println("Max lines changed in a commit: " + mx);
-        System.out.println("Min lines changed in a commit: " + mn);
+        System.out.println("Number of commits: " + numOfCommits);
+        System.out.println("Most recent commit timestamp: " + latestTimeStamp);
+        System.out.printf("Average lines changed per commit: %.2f\n", avgLinesPerCommit);
+        System.out.println("Total lines changed across all commits: " + totalLinesChanged);
+        System.out.println("Max lines changed in a commit: " + maxChangedInACommit);
+        System.out.println("Min lines changed in a commit: " + minChangedInACommit);
 
-        s.close();
+        scan.close();
     }
+
+    public static List<Map<String, String>> parseCSV(String filename) {
+        // Create a List of Maps (containing String key-value pairs) called "allCommits"
+        List<Map<String, String>> allCommits = new ArrayList<>();
+        String nameOfFile = filename;
+
+        // Cycle through lines of the file
+        try (Scanner fileScan = new Scanner(new File(nameOfFile))) {
+            fileScan.nextLine();
+            // For each line of content in FILE ...
+            while (fileScan.hasNextLine()) {
+                // ...create an array ("dataItems") and populate it with contents of line delimited by commas (id, timeStamp, numLinesChanged)
+                String[] dataItems = fileScan.nextLine().split(",");
+
+                // Convert the numLinesChanged from a String into an integer
+                int numLinesChanged = Integer.parseInt(dataItems[2]);  
+
+                // Create a new map ("eachCommitData") and populate with String data from array and the integer at "numLinesChanged"
+                Map<String, String> eachCommitData = new HashMap<>();
+                eachCommitData.put("id", dataItems[0]);  // forkID
+                eachCommitData.put("timeStamp", dataItems[1]);  // push time
+                eachCommitData.put("numLinesChanged", String.valueOf(numLinesChanged)); // number of lines in push
+
+                // add this map ("eachCommitData") to the List of allCommits
+                allCommits.add(eachCommitData); 
+            }
+        // try-catch throw error if file is not found
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            return null;
+        }
+    return allCommits;
+}
+
 }
