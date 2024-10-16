@@ -6,61 +6,64 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Create a scanner named "s"
+        // Create a scanner
         Scanner scan = new Scanner(System.in);
 
-        // Store user input in String "f" (this is the FILE NAME)
+        // Collect filename from user
         System.out.print("Enter the CSV filename: ");
         String fileName = scan.nextLine();
 
-        // Create a List containing a Map (containing String key-value pairs) called "allUserCommits"
-        List<Map<String, String>> allUserCommits = new ArrayList<>();
-        // Create a new scanner ("fs" to read the FILE NAME stored in "f"
+        // Create a List of Maps (containing String key-value pairs) called "allCommits"
+        List<Map<String, String>> allCommits = new ArrayList<>();
+        // Cycle through lines of the file
         try (Scanner fileScan = new Scanner(new File(fileName))) {
-            // cycle through lines of file
             fileScan.nextLine();
-
             // For each line of content in FILE ...
             while (fileScan.hasNextLine()) {
-                // ...declare an array ("v") and populate it with contents of line delimited by commas
+                // ...create an array ("dataItems") and populate it with contents of line delimited by commas (id, timeStamp, numLinesChanged)
                 String[] dataItems = fileScan.nextLine().split(",");
 
-                // Convert the LinesChanged String into an integer
+                // Convert the numLinesChanged from a String into an integer
                 int numLinesChanged = Integer.parseInt(dataItems[2]);  
 
-                // Create a new map ("eachCommitData") and populate with String data from array "v" and the integer at "numLinesChanged"
+                // Create a new map ("eachCommitData") and populate with String data from array and the integer at "numLinesChanged"
                 Map<String, String> eachCommitData = new HashMap<>();
                 eachCommitData.put("id", dataItems[0]);  // forkID
                 eachCommitData.put("timeStamp", dataItems[1]);  // push time
                 eachCommitData.put("numLinesChanged", String.valueOf(numLinesChanged)); // number of lines in push
-                allUserCommits.add(eachCommitData); // add String map "eachCommitData" to list "allUserCommits"
+
+                // add this map ("eachCommitData") to the List of allCommits
+                allCommits.add(eachCommitData); 
             }
-            // try-catch error if file is not found
+        // try-catch throw error if file is not found
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
             scan.close();
             return;
         }
 
-        // Creating a Map comprised of a Key String and a List Value comprised of a Map of Strings named "mp2"
-        Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
+        // Create a Map  where the key is a string id and the value is a map containing all data about commits made by that id
+        Map<String, List<Map<String, String>>> commitsByID = new HashMap<>();
 
-        // Iterating through the Map called "allUserCommits" that was created on line 17
-        for (Map<String, String> eachCommit : allUserCommits) {
-            // for each item in the map - we are getting the value of the Key: ID
+        // Iterating through List "allCommits," which contains Maps of eachCommitData
+        // For each Map stored in the list ...
+        for (Map<String, String> eachCommit : allCommits) {
+            // ... retrieve the id value stored at the key "id"
             String id = eachCommit.get("id");
 
-            //Creating a new list comprised of a Map named "lst" and we
-            List<Map<String, String>> lst = mp2.get(id);
+            // ... create a new List comprised of Maps and populate it with 
+            // the List stored in value paired with the matching id key in commitsByID Map
+            List<Map<String, String>> lst = commitsByID.get(id);
+            // ... if the id has not been added to the Map, add it with this list
             if (lst == null) {
                 lst = new ArrayList<>();
-                mp2.put(id, lst);
+                commitsByID.put(id, lst);
             }
             lst.add(eachCommit);
         }
 
         // store size of map in "numberOfForks"
-        int numberOfForks = mp2.size();
+        int numberOfForks = commitsByID.size();
 
         // print output
         System.out.println("There are " + numberOfForks + " forks available (fork1 to fork" + numberOfForks + ").");
@@ -70,10 +73,10 @@ public class Main {
         // if user enters "all", display whole list, else get list from map
         List<Map<String, String>> dataFromFork;
         if (inp.equalsIgnoreCase("all")) {
-            dataFromFork = allUserCommits;
+            dataFromFork = allCommits;
         } else {
             String id = "fork" + inp; 
-            dataFromFork = mp2.get(id);
+            dataFromFork = commitsByID.get(id);
         }
 
         int numOfCommits = dataFromFork.size();
