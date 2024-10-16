@@ -84,17 +84,23 @@ public class Main {
 
         // Create a date formatter and use it to format date
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime lat = null;
-        for (Map<String, String> d : dataFromFork) {
-            LocalDateTime t = LocalDateTime.parse(d.get("timeStamp"), f1); 
-            if (lat == null || t.isAfter(lat)) {
-                lat = t;
+        LocalDateTime latestTime = null;
+        // Iterating through dataFromFork Map
+        for (Map<String, String> userData : dataFromFork) {
+
+            LocalDateTime timeStamp = LocalDateTime.parse(userData.get("timeStamp"), f1);
+
+            // Identifying what is the latest timestamp
+            if (latestTime == null || timeStamp.isAfter(latestTime)) {
+                latestTime = timeStamp;
             }
         }
+
+        // Converting DateTime into specified pattern
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String latestTimeStamp = lat.format(f2);
+        String latestTimeStamp = latestTime.format(f2);
 
-
+        // Calculating total lines changed over all sessions
         double tot = 0.0;
         int totalLinesChanged = 0;
         for (Map<String, String> d : dataFromFork) {
@@ -104,6 +110,7 @@ public class Main {
         }
         double avgLinesPerCommit = tot / numOfCommits;
 
+        // Finding the largest and smallest values in changed lines
         int maxChangedInACommit = Integer.MIN_VALUE;
         int minChangedInACommit = Integer.MAX_VALUE;
         for (Map<String, String> d : dataFromFork) {
