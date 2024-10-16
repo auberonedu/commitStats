@@ -42,24 +42,24 @@ public class Main {
             return;
         }
 
-        // Create a Map  where the key is a string id and the value is a map containing all data about commits made by that id
+        // Create a Map  where the key is a string id and the value is a List of Maps containing all data about commits made by that id
         Map<String, List<Map<String, String>>> commitsByID = new HashMap<>();
 
         // Iterating through List "allCommits," which contains Maps of eachCommitData
-        // For each Map stored in the list ...
+        // For each Map stored in the List of all commits ...
         for (Map<String, String> eachCommit : allCommits) {
-            // ... retrieve the id value stored at the key "id"
+            // ... retrieve the String id value stored at the key "id" (forkID)
             String id = eachCommit.get("id");
 
             // ... create a new List comprised of Maps and populate it with 
-            // the List stored in value paired with the matching id key in commitsByID Map
-            List<Map<String, String>> lst = commitsByID.get(id);
+            // the List in commitsByID Map stored at the key matching the id
+            List<Map<String, String>> listOfMapsByID = commitsByID.get(id);
             // ... if the id has not been added to the Map, add it with this list
-            if (lst == null) {
-                lst = new ArrayList<>();
-                commitsByID.put(id, lst);
+            if (listOfMapsByID == null) {
+                listOfMapsByID = new ArrayList<>();
+                commitsByID.put(id, listOfMapsByID);
             }
-            lst.add(eachCommit);
+            listOfMapsByID.add(eachCommit);
         }
 
         // store size of map in "numberOfForks"
