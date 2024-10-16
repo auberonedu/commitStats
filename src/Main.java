@@ -13,7 +13,7 @@ public class Main {
         String f = s.nextLine();
 
         //store the info from the text file
-        List<Map<String, String>> dta = new ArrayList<>();
+        List<Map<String, String>> dataList = new ArrayList<>();
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
@@ -26,7 +26,7 @@ public class Main {
                 dataMap.put("id", v[0]);  
                 dataMap.put("tm", v[1]);  
                 dataMap.put("chg", String.valueOf(chg));
-                dta.add(dataMap);
+                dataList.add(dataMap);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
@@ -36,7 +36,7 @@ public class Main {
 
         //store info for "id"
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : dataList) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -53,7 +53,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = dataList;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
