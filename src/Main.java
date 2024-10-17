@@ -6,12 +6,18 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+
+        //Instantiating new scanner
         Scanner s = new Scanner(System.in);
 
+        //Ask user for the file name
         System.out.print("Enter the CSV filename: ");
+        //variable f stores the input from the user
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
+        
+        //List of maps created to store commit info
+        List<Map<String, String>> data = new ArrayList<>();
         try (Scanner fs = new Scanner(new File(f))) {
             fs.nextLine();
 
@@ -20,11 +26,11 @@ public class Main {
 
                 int chg = Integer.parseInt(v[2]);  
 
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
+                Map<String, String> mp2 = new HashMap<>();
+                mp2.put("id", v[0]);  
+                mp2.put("tm", v[1]);  
+                mp2.put("chg", String.valueOf(chg));
+                data.add(mp2);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
@@ -32,17 +38,17 @@ public class Main {
             return;
         }
 
-        Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        Map<String, List<Map<String, String>>> forkCommits = new HashMap<>();
+        for (Map<String, String> d : data) {
             String id = d.get("id");
-            List<Map<String, String>> lst = mp2.get(id);
+            List<Map<String, String>> lst = forkCommits.get(id);
             if (lst == null) {
                 lst = new ArrayList<>();
-                mp2.put(id, lst);
+                forkCommits.put(id, lst);
             }
             lst.add(d);
         }
-        int cnt = mp2.size();
+        int cnt = forkCommits.size();
 
         System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
@@ -50,10 +56,10 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = data;
         } else {
             String id = "fork" + inp; 
-            sel = mp2.get(id);
+            sel = forkCommits.get(id);
         }
 
         int sz = sel.size();
@@ -90,6 +96,7 @@ public class Main {
             }
         }
 
+        //Print Results
         System.out.println("\nStatistics:");
         System.out.println("Number of commits: " + sz);
         System.out.println("Most recent commit timestamp: " + latT);
