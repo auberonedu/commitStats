@@ -117,4 +117,10 @@ public class Main {
         //Close scanner
         s.close();
     }
+
+    public static List<Map<String, String>> parseCSV(String filename){
+        List<Map<String, String>> data = new ArrayList<>();
+    
+        return data;
+    }
 }
