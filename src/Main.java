@@ -38,6 +38,7 @@ public class Main {
             return;
         }
 
+        //Create new map that organize commits by ID
         Map<String, List<Map<String, String>>> forkCommits = new HashMap<>();
         for (Map<String, String> d : data) {
             String id = d.get("id");
@@ -50,10 +51,12 @@ public class Main {
         }
         int cnt = forkCommits.size();
 
+        //Print out the forks avalaible
         System.out.println("There are " + cnt + " forks available (fork1 to fork" + cnt + ").");
         System.out.print("Enter the fork number to analyze (or 'all' for all forks): ");
         String inp = s.nextLine();
 
+        // Select which commits to analyze dependent on the user input
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
             sel = data;
@@ -64,6 +67,7 @@ public class Main {
 
         int sz = sel.size();
 
+        // Determine the most recent commit
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
@@ -75,6 +79,7 @@ public class Main {
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String latT = lat.format(f2);
 
+        //Calculate statistics from the commits chosen
         double tot = 0.0;
         int tlc = 0;
         for (Map<String, String> d : sel) {
@@ -105,6 +110,7 @@ public class Main {
         System.out.println("Max lines changed in a commit: " + mx);
         System.out.println("Min lines changed in a commit: " + mn);
 
+        //Close scanner
         s.close();
     }
 }
