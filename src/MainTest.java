@@ -1,9 +1,10 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,8 @@ public class MainTest {
       // You will finish implementing this method in Wave 3
       // TODO: Call Main.parseCSV("data/small_commit_data.csv") here and set it to an actual variable
 
+      // Call Main.parseCSV 
+      List<Map<String, String>> actualCommits = Main.parseCSV("data/small_commit_data.csv");
 
       // Sets up the expected value for you. You do not need to edit this part
       List<Map<String, String>> expectedCommits = new ArrayList<>();
@@ -37,5 +40,6 @@ public class MainTest {
       // Finish expected value setup
 
       // TODO: Assert that the expected equals the actual
+      assertEquals(expectedCommits, actualCommits);
     }
 }

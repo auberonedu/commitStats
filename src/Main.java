@@ -7,33 +7,18 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
+        parseCSV("commit_data.csv");
 
+        //takes input from the user
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
+                //call helper method
+                List<Map<String, String>> dataList = parseCSV(f);
 
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
-
+        //store info for "id"
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : dataList) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -50,7 +35,7 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = dataList;
         } else {
             String id = "fork" + inp; 
             sel = mp2.get(id);
@@ -90,6 +75,7 @@ public class Main {
             }
         }
 
+        //print statistics
         System.out.println("\nStatistics:");
         System.out.println("Number of commits: " + sz);
         System.out.println("Most recent commit timestamp: " + latT);
@@ -100,4 +86,30 @@ public class Main {
 
         s.close();
     }
+
+    public static List<Map<String, String>> parseCSV(String filename) {
+        //store the info from the text file
+        List<Map<String, String>> dataList = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);  
+
+                Map<String, String> dataMap = new HashMap<>();
+                dataMap.put("id", v[0]);  
+                dataMap.put("tm", v[1]);  
+                dataMap.put("chg", String.valueOf(chg));
+                dataList.add(dataMap);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            // s.close();
+            // return;
+        }
+        return dataList;
+    }
+
 }
