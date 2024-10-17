@@ -12,7 +12,7 @@ public class Main {
 
         //Ask user for the file name
         System.out.print("Enter the CSV filename: ");
-        
+        String f = s.nextLine();
 
         List<Map<String, String>> data = parseCSV(f);
 
@@ -80,6 +80,7 @@ public class Main {
             if (chg > mx) {
                 mx = chg;
             }
+            //If change is less than minimum, min = change
             if (chg < mn) {
                 mn = chg;
             }
@@ -102,11 +103,14 @@ public class Main {
     public static List<Map<String, String>> parseCSV(String filename){
         List<Map<String, String>> data = new ArrayList<>();
     
+        //Read in the csv files
         try (Scanner fs = new Scanner(new File(filename))) {
             fs.nextLine();
             while (fs.hasNextLine()) {
+                //Split the data apart by ","
                 String[] v = fs.nextLine().split(",");
 
+                //split values and store them into data
                 int chg = Integer.parseInt(v[2]);  
                 Map<String, String> mp2 = new HashMap<>();
                 mp2.put("id", v[0]);  
