@@ -13,7 +13,7 @@ public class Main {
         //Ask user for the file name
         System.out.print("Enter the CSV filename: ");
         //variable f stores the input from the user
-        String f = s.nextLine();
+        
 
         
         //List of maps created to store commit info
@@ -121,6 +121,23 @@ public class Main {
     public static List<Map<String, String>> parseCSV(String filename){
         List<Map<String, String>> data = new ArrayList<>();
     
-        return data;
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);  
+
+                Map<String, String> mp2 = new HashMap<>();
+                mp2.put("id", v[0]);  
+                mp2.put("tm", v[1]);  
+                mp2.put("chg", String.valueOf(chg));
+                data.add(mp2);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            fs.close();
+            return data;
+        }
     }
 }
