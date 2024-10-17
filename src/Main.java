@@ -7,32 +7,14 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
+        parseCSV("commit_data.csv");
 
         //takes input from the user
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        //store the info from the text file
-        List<Map<String, String>> dataList = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
-
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> dataMap = new HashMap<>();
-                dataMap.put("id", v[0]);  
-                dataMap.put("tm", v[1]);  
-                dataMap.put("chg", String.valueOf(chg));
-                dataList.add(dataMap);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
+                //call helper method
+                List<Map<String, String>> dataList = parseCSV(f);
 
         //store info for "id"
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
@@ -104,4 +86,30 @@ public class Main {
 
         s.close();
     }
+
+    public static List<Map<String, String>> parseCSV(String filename) {
+        //store the info from the text file
+        List<Map<String, String>> dataList = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(filename))) {
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);  
+
+                Map<String, String> dataMap = new HashMap<>();
+                dataMap.put("id", v[0]);  
+                dataMap.put("tm", v[1]);  
+                dataMap.put("chg", String.valueOf(chg));
+                dataList.add(dataMap);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+            // s.close();
+            // return;
+        }
+        return dataList;
+    }
+
 }
