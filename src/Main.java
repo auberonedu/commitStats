@@ -87,12 +87,16 @@ public class Main {
             tot += lc;
             tlc += lc;
         }
+        //Calculate average lines changes
         double avg = tot / sz;
 
         int mx = Integer.MIN_VALUE;
         int mn = Integer.MAX_VALUE;
         for (Map<String, String> d : sel) {
+            //Calculate changed lines in csv
             int chg = Integer.parseInt(d.get("chg"));
+            //Check if change is greater than max
+            //If change is greater than max, max = change
             if (chg > mx) {
                 mx = chg;
             }
