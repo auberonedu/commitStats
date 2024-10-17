@@ -12,33 +12,13 @@ public class Main {
 
         //Ask user for the file name
         System.out.print("Enter the CSV filename: ");
-        //variable f stores the input from the user
         
 
-        
-        //List of maps created to store commit info
-        List<Map<String, String>> data = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
+        List<Map<String, String>> data = parseCSV(f);
 
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp2 = new HashMap<>();
-                mp2.put("id", v[0]);  
-                mp2.put("tm", v[1]);  
-                mp2.put("chg", String.valueOf(chg));
-                data.add(mp2);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
-            s.close();
-            return;
-        }
 
         //Create new map that organize commits by ID
+        //If list is empty, it will add it into a new arrayList
         Map<String, List<Map<String, String>>> forkCommits = new HashMap<>();
         for (Map<String, String> d : data) {
             String id = d.get("id");
@@ -117,7 +97,8 @@ public class Main {
         //Close scanner
         s.close();
     }
-
+    
+    //Helper method for parsing the CSV file that the user inputs
     public static List<Map<String, String>> parseCSV(String filename){
         List<Map<String, String>> data = new ArrayList<>();
     
@@ -127,17 +108,17 @@ public class Main {
                 String[] v = fs.nextLine().split(",");
 
                 int chg = Integer.parseInt(v[2]);  
-
                 Map<String, String> mp2 = new HashMap<>();
                 mp2.put("id", v[0]);  
                 mp2.put("tm", v[1]);  
                 mp2.put("chg", String.valueOf(chg));
                 data.add(mp2);
             }
+            //Throw error if file is not found
         } catch (FileNotFoundException e) {
             System.out.println("Error reading the file: " + e.getMessage());
-            fs.close();
+        }
+        //return the data List 
             return data;
         }
     }
-}
