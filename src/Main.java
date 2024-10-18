@@ -6,34 +6,25 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        // Initializing scanner, taking input on the filename
         Scanner s = new Scanner(System.in);
 
         System.out.print("Enter the CSV filename: ");
         String f = s.nextLine();
 
-        List<Map<String, String>> dta = new ArrayList<>();
-        try (Scanner fs = new Scanner(new File(f))) {
-            fs.nextLine();
+        // call parseCSV method to get all data
+        List<Map<String, String>> allData = parseCSV(f);
 
-            while (fs.hasNextLine()) {
-                String[] v = fs.nextLine().split(",");
-
-                int chg = Integer.parseInt(v[2]);  
-
-                Map<String, String> mp1 = new HashMap<>();
-                mp1.put("id", v[0]);  
-                mp1.put("tm", v[1]);  
-                mp1.put("chg", String.valueOf(chg));
-                dta.add(mp1);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
+        // if allData empty then the file was not found or had problem
+        if (allData.isEmpty()) {
+            System.out.println("No data found or error reading the file.");
             s.close();
             return;
         }
 
+        // grouping data by id
         Map<String, List<Map<String, String>>> mp2 = new HashMap<>();
-        for (Map<String, String> d : dta) {
+        for (Map<String, String> d : allData) {
             String id = d.get("id");
             List<Map<String, String>> lst = mp2.get(id);
             if (lst == null) {
@@ -50,18 +41,19 @@ public class Main {
 
         List<Map<String, String>> sel;
         if (inp.equalsIgnoreCase("all")) {
-            sel = dta;
+            sel = allData;
         } else {
-            String id = "fork" + inp; 
+            String id = "fork" + inp;
             sel = mp2.get(id);
         }
 
         int sz = sel.size();
 
+        // format timestamp
         DateTimeFormatter f1 = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime lat = null;
         for (Map<String, String> d : sel) {
-            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1); 
+            LocalDateTime t = LocalDateTime.parse(d.get("tm"), f1);
             if (lat == null || t.isAfter(lat)) {
                 lat = t;
             }
@@ -69,6 +61,7 @@ public class Main {
         DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String latT = lat.format(f2);
 
+        // manipulating chg data
         double tot = 0.0;
         int tlc = 0;
         for (Map<String, String> d : sel) {
@@ -90,6 +83,7 @@ public class Main {
             }
         }
 
+        // printing out report of requested forks
         System.out.println("\nStatistics:");
         System.out.println("Number of commits: " + sz);
         System.out.println("Most recent commit timestamp: " + latT);
@@ -99,5 +93,31 @@ public class Main {
         System.out.println("Min lines changed in a commit: " + mn);
 
         s.close();
+    }
+
+    public static List<Map<String, String>> parseCSV(String f) {
+        List<Map<String, String>> allData = new ArrayList<>();
+        try (Scanner fs = new Scanner(new File(f))) {
+            // Opens file in scanner, iterates across, initializes ArrayList, coalescses
+            // stats into a hashmap, then places in an array list
+            fs.nextLine();
+
+            while (fs.hasNextLine()) {
+                String[] v = fs.nextLine().split(",");
+
+                int chg = Integer.parseInt(v[2]);
+                // one HashMap = one commit
+                Map<String, String> valueMap = new HashMap<>();
+                valueMap.put("id", v[0]);
+                valueMap.put("tm", v[1]);
+                valueMap.put("chg", String.valueOf(chg));
+                allData.add(valueMap);
+            }
+        }
+
+        catch (FileNotFoundException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
+        return allData;
     }
 }
